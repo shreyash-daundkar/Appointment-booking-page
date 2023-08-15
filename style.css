@@ -33,7 +33,10 @@
   }
   
   #my-form {
-    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 35px;
     background: #f4f4f4;
   }
   
@@ -71,7 +74,17 @@
   
   .error {
     background: orangered;
+  }
+
+  .success {
+    background: rgb(83, 245, 83);
+  }
+
+.msg {
     color: #fff;
+    text-align: center;
+    border-radius: 5px;
     padding: 5px;
     margin: 5px;
+    height: 35px;
   }
