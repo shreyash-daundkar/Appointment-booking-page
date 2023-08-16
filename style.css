@@ -26,23 +26,30 @@
   }
 
   .li-name {
-    width: 35%;
+    width: 32%;
     display: inline-block;
-    margin-left: 2%;
   }
-
+  
   li.email {
-    width: 56%;
+    width: 50%;
     display: inline-block
   }
   
-.dlt-btn {
-  background-color: red;
+  .list-btn {
+  margin-right: 2%;
   color:white;
   height: 100%;
   width: 7%;
   display: inline-block;
   border:none;
+}
+
+.dlt-btn {
+  background-color: red;
+}
+
+.edit-btn {
+  background-color:rgb(83, 245, 83);
 }
 
   header {

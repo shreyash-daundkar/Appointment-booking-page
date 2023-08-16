@@ -38,8 +38,10 @@ function onSubmit(e) {
 
 list.addEventListener('click', listEvent);
 function listEvent(e) {
-    if(e.target.classList.contains('dlt-btn')) dltUser(e.target.parentElement)
+    if(e.target.classList.contains('list-btn')) dltUser(e.target.parentElement);
+    if(e.target.classList.contains('edit-btn')) editUser(e.target.parentElement);
 }
+
 
 
 
@@ -50,6 +52,16 @@ function dltUser(li) {
     delete userObj[email];
     updateStorage();
     li.style.display = 'none';
+}
+
+
+
+
+// Edit user 
+
+function editUser(li) {
+    name.value = li.children[2].textContent;
+    email.value = li.children[3].textContent;
 }
 
 
@@ -101,7 +113,8 @@ function updateStorage() {
 
 function addUser(user) {
     const li = addElement('li', list);
-    const dlt = addElement('button', li, 'X', 'dlt-btn');
+    const dlt = addElement('button', li, 'X', 'dlt-btn', 'list-btn');
+    const edit = addElement('button', li, 'Edit', 'edit-btn', 'list-btn');
     const liName =  addElement('span', li, user.name, 'li-name');
     const liEmail = addElement('span', li, user.email, 'li-email');
 }
