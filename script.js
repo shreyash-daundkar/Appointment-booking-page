@@ -11,6 +11,7 @@ const list = document.querySelector('#list');
 
 // Fetch users from local storage
 
+if(!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify({}));
 const userObj = JSON.parse(localStorage.getItem('users'));
 for(user in userObj) addUser(userObj[user]);
 
@@ -32,6 +33,28 @@ function onSubmit(e) {
 
 
 
+
+// Manage list events
+
+list.addEventListener('click', listEvent);
+function listEvent(e) {
+    if(e.target.classList.contains('dlt-btn')) dltUser(e.target.parentElement)
+}
+
+
+
+// Delete user
+
+function dltUser(li) {
+    const email = li.lastElementChild.textContent;
+    delete userObj[email];
+    updateStorage();
+    li.style.display = 'none';
+}
+
+
+
+
 // Validation
 
 function isValid() {
@@ -48,15 +71,13 @@ function isValid() {
 // Store in local storage
 
 function storeLocally(name, email) {
-    if(!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify({}));
-    const obj = JSON.parse(localStorage.getItem('users'));
-    if(obj.hasOwnProperty(email)) {
+    if(userObj.hasOwnProperty(email)) {
         showMsg('error', 'Email is already used');
         return false;
     }
-    obj[email] = {name, email};
-    localStorage.setItem('users', JSON.stringify(obj))
-    addUser(obj[email]);
+    userObj[email] = {name, email};
+    updateStorage()
+    addUser(userObj[email]);
     return true;
 }
 
@@ -74,8 +95,13 @@ function showMsg(result, text) {
     }, 3000);
 }
 
+function updateStorage() {
+    localStorage.setItem('users', JSON.stringify(userObj));
+}
+
 function addUser(user) {
     const li = addElement('li', list);
+    const dlt = addElement('button', li, 'X', 'dlt-btn');
     const liName =  addElement('span', li, user.name, 'li-name');
     const liEmail = addElement('span', li, user.email, 'li-email');
 }
