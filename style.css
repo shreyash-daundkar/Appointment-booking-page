@@ -14,9 +14,23 @@
   }
   
   ul li {
-    padding: 5px;
+    height: 30px;
     background: #f4f4f4;
     margin: 5px 0;
+  }
+
+  ul li span {
+    padding: 5px;
+  }
+
+  .li-name {
+    width: 40%;
+    display: inline-block;
+  }
+
+  li.email {
+    width: 60;
+    display: inline-block
   }
   
   header {

@@ -4,6 +4,15 @@ const form = document.querySelector('#my-form');
 const name = document.querySelector('#name');
 const email = document.querySelector('#email');
 const msg = document.querySelector('.msg');
+const list = document.querySelector('#list');
+
+
+
+
+// Fetch users from local storage
+
+const userObj = JSON.parse(localStorage.getItem('users'));
+for(user in userObj) addUser(userObj[user]);
 
 
 
@@ -14,12 +23,11 @@ form.addEventListener('submit', onSubmit);
 function onSubmit(e) {
     e.preventDefault();
     if(!isValid()) return;
-    storeLocally(name.value, email.value);
+    if(!storeLocally(name.value, email.value)) return
     showMsg('success', 'Submitted');
     name.value = '';
     email.value = '';
 }
-
 
 
 
@@ -34,6 +42,29 @@ function isValid() {
     else return true;
 }
 
+
+
+
+// Store in local storage
+
+function storeLocally(name, email) {
+    if(!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify({}));
+    const obj = JSON.parse(localStorage.getItem('users'));
+    if(obj.hasOwnProperty(email)) {
+        showMsg('error', 'Email is already used');
+        return false;
+    }
+    obj[email] = {name, email};
+    localStorage.setItem('users', JSON.stringify(obj))
+    addUser(obj[email]);
+    return true;
+}
+
+
+
+
+// Utility functions 
+
 function showMsg(result, text) {
     msg.classList.add(result);
     msg.textContent = text;
@@ -43,12 +74,16 @@ function showMsg(result, text) {
     }, 3000);
 }
 
+function addUser(user) {
+    const li = addElement('li', list);
+    const liName =  addElement('span', li, user.name, 'li-name');
+    const liEmail = addElement('span', li, user.email, 'li-email');
+}
 
-
-
-
-// Store in local storage
-
-function storeLocally(name, email) {
-     localStorage.setItem(name.toLowerCase(), JSON.stringify({name, email}));
+function addElement(type, parent, text, ...classes) {
+    const element = document.createElement(type);
+    classes.forEach(c => element.classList.add(c));
+    if(text) element.textContent = text;
+    parent.append(element);
+    return element;
 }
