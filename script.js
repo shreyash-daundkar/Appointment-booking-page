@@ -9,11 +9,15 @@ const list = document.querySelector('#list');
 
 
 
+
 // Fetch users from local storage
 
 if(!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify({}));
 const userObj = JSON.parse(localStorage.getItem('users'));
 for(user in userObj) addUser(userObj[user]);
+
+const url = 'https://crudcrud.com/api/fbb7a21c8fee4bfc86c63735e73451fe';
+const route = '/Appointment-Data'
 
 
 
@@ -24,8 +28,9 @@ form.addEventListener('submit', onSubmit);
 function onSubmit(e) {
     e.preventDefault();
     if(!isValid()) return;
-    if(!storeLocally(name.value, email.value)) return
-    showMsg('success', 'Submitted');
+    //if(!storeLocally(name.value, email.value)) return
+    storeOnServer(name.value, email.value)
+    //showMsg('success', 'Submitted');
     name.value = '';
     email.value = '';
 }
@@ -82,15 +87,29 @@ function isValid() {
 
 // Store in local storage
 
-function storeLocally(name, email) {
-    if(userObj.hasOwnProperty(email)) {
-        showMsg('error', 'Email is already used');
-        return false;
+// function storeLocally(name, email) {
+//     if(userObj.hasOwnProperty(email)) {
+//         showMsg('error', 'Email is already used');
+//         return false;
+//     }
+//     storeOnServer (name, email)
+//     userObj[email] = {name, email};
+//     updateStorage()
+//     addUser(userObj[email]);
+//     return true;
+// }
+
+// Store on server
+
+async function storeOnServer (name, email) {
+    try {
+        const res = await axios.post(url + route, {email,name});
+        addUser(res.data);
+        showMsg('success', 'Submitted');
+    } catch (err) {
+        console.log(err.message);
+        showMsg('error', 'Something went wrong');
     }
-    userObj[email] = {name, email};
-    updateStorage()
-    addUser(userObj[email]);
-    return true;
 }
 
 
