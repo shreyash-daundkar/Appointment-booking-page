@@ -24,8 +24,10 @@ async function onRefresh() {
     try {
         const res = await axios.get( url + route);
         for(user of res.data) addUser(user);
+        showMsg('success', 'Welcome');
     } catch (err) {
         console.log(err.message);
+        showMsg('error', 'Something went wrong');
     }
 }
 
@@ -88,11 +90,16 @@ function listEvent(e) {
 
 // Delete user
 
-function dltUser(li) {
-    const email = li.lastElementChild.textContent;
-    delete userObj[email];
-    updateStorage();
-    li.style.display = 'none';
+async function dltUser(li) {
+    try {
+        const id = li.getAttribute('data-id');
+        await axios.delete( url + route + "/" + id);
+        li.style.display = 'none';
+        showMsg('success', 'Deleted');
+    } catch (err) {
+        console.log(err.message);
+        showMsg('error', 'Something went wrong');
+    }
 }
 
 
@@ -125,6 +132,7 @@ function addUser(user) {
     const edit = addElement('button', li, 'Edit', 'edit-btn', 'list-btn');
     const liName =  addElement('span', li, user.name, 'li-name');
     const liEmail = addElement('span', li, user.email, 'li-email');
+    li.setAttribute('data-id', user["_id"]);
 }
 
 function addElement(type, parent, text, ...classes) {
