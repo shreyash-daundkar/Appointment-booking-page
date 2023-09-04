@@ -11,7 +11,7 @@ const list = document.querySelector('#list');
 
 // Server address and routs
 
-const url = 'https://crudcrud.com/api/fbb7a21c8fee4bfc86c63735e73451fe';
+const url = 'https://crudcrud.com/api/a56aae6113f34fb58e52d7eae28f2258';
 const route = '/Appointment-Data'
 
 
@@ -21,10 +21,11 @@ const route = '/Appointment-Data'
 
 window.addEventListener('DOMContentLoaded',onRefresh)
 async function onRefresh() {
+    Array.from(list.children).forEach((x) => x.style.display = 'none');
     try {
         const res = await axios.get( url + route);
         for(user of res.data) addUser(user);
-        showMsg('success', 'Welcome');
+        showMsg('success', 'Refreshed');
     } catch (err) {
         console.log(err.message);
         showMsg('error', 'Something went wrong');
@@ -36,11 +37,14 @@ async function onRefresh() {
 
 // Managing form Events
 
+let editing = null;
+
 form.addEventListener('submit', onSubmit);
 function onSubmit(e) {
     e.preventDefault();
     if(!isValid()) return;
-    storeOnServer(name.value, email.value)
+    if(editing) updateUser(name.value, email.value);
+    else storeOnServer(name.value, email.value);
     name.value = '';
     email.value = '';
 }
@@ -81,8 +85,8 @@ async function storeOnServer (name, email) {
 
 list.addEventListener('click', listEvent);
 function listEvent(e) {
-    if(e.target.classList.contains('list-btn')) dltUser(e.target.parentElement);
-    if(e.target.classList.contains('edit-btn')) editUser(e.target.parentElement);
+    if(e.target.classList.contains('dlt-btn')) dltUser(e.target.parentElement);
+    else if(e.target.classList.contains('edit-btn')) editUser(e.target.parentElement);
 }
 
 
@@ -110,6 +114,26 @@ async function dltUser(li) {
 function editUser(li) {
     name.value = li.children[2].textContent;
     email.value = li.children[3].textContent;
+    editing = li;
+}
+
+
+
+
+// Update user
+
+async function updateUser(name, email) {
+    try {
+        const id = editing.getAttribute('data-id');
+        const res = await axios.put(url + route + "/" + id, {email,name});
+        editing.children[2].textContent = name;
+        editing.children[3].textContent = email;
+        showMsg('success', 'Edited');
+        editing = null;
+    } catch (err) {
+        console.log(err.message);
+        showMsg('error', 'Something went wrong');
+    }
 }
 
 
